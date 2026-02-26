@@ -25,60 +25,61 @@ class _UserRequirementsState extends State<UserRequirements> {
   final TextEditingController kitchenController = TextEditingController();
   final TextEditingController balconyController = TextEditingController();
 
-// Future<String> sendMessages() async {
-//   final length = lengthController.text.trim();
-//   final width = widthController.text.trim();
-//   final rooms = roomController.text.trim();
-//   final bathrooms = bathroomController.text.trim();
-//   final kitchens = kitchenController.text.trim();
-//   final balconies = balconyController.text.trim();
+  // Future<String> sendMessages() async {
+  //   final length = lengthController.text.trim();
+  //   final width = widthController.text.trim();
+  //   final rooms = roomController.text.trim();
+  //   final bathrooms = bathroomController.text.trim();
+  //   final kitchens = kitchenController.text.trim();
+  //   final balconies = balconyController.text.trim();
 
-//   if (length.isEmpty || width.isEmpty) {
-//     return "Please enter length and width.";
-//   }
+  //   if (length.isEmpty || width.isEmpty) {
+  //     return "Please enter length and width.";
+  //   }
 
-//   final response = await http.post(
-//     Uri.parse("https://house-blueprint-ai.vercel.app/api/gemini"),
-//     headers: {"Content-Type": "application/json"},
-//     body: jsonEncode({
-//       "prompt":
-//           "Generate a house blueprint based on the following details:"
-//           "\nLength: $length meters"
-//           "\nWidth: $width meters"
-//           "\nShape: ${_selectedShape.name}"
-//           "\nRooms: $rooms"
-//           "\nBathrooms: $bathrooms"
-//           "\nKitchens: $kitchens"
-//           "\nBalconies: $balconies"
-//           "\nGive the best layout."
-//     }),
-//   );
+  //   final response = await http.post(
+  //     Uri.parse("https://house-blueprint-ai.vercel.app/api/gemini"),
+  //     headers: {"Content-Type": "application/json"},
+  //     body: jsonEncode({
+  //       "prompt":
+  //           "Generate a house blueprint based on the following details:"
+  //           "\nLength: $length meters"
+  //           "\nWidth: $width meters"
+  //           "\nShape: ${_selectedShape.name}"
+  //           "\nRooms: $rooms"
+  //           "\nBathrooms: $bathrooms"
+  //           "\nKitchens: $kitchens"
+  //           "\nBalconies: $balconies"
+  //           "\nGive the best layout."
+  //     }),
+  //   );
 
-//   if (response.statusCode == 200) {
-//     return jsonDecode(response.body)['output'] ?? "No output received.";
-//   } else {
-//     return "Error from server: ${response.body}";
-//   }
-// }
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(response.body)['output'] ?? "No output received.";
+  //   } else {
+  //     return "Error from server: ${response.body}";
+  //   }
+  // }
 
-Future<String> sendMessages() async {
-  final length = lengthController.text.trim();
-  final width = widthController.text.trim();
-  final rooms = roomController.text.trim();
-  final bathrooms = bathroomController.text.trim();
-  final kitchens = kitchenController.text.trim();
-  final balconies = balconyController.text.trim();
+  Future<String> sendMessages() async {
+    final length = lengthController.text.trim();
+    final width = widthController.text.trim();
+    final rooms = roomController.text.trim();
+    final bathrooms = bathroomController.text.trim();
+    final kitchens = kitchenController.text.trim();
+    final balconies = balconyController.text.trim();
 
-  if (length.isEmpty || width.isEmpty) {
-    return "Please enter length and width.";
-  }
+    if (length.isEmpty || width.isEmpty) {
+      return "Please enter length and width.";
+    }
 
-  try {
-    final response = await http.post(
-      Uri.parse("https://aiblueprintgenerator.vercel.app/api/gemini"),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "prompt": """
+    try {
+      final response = await http.post(
+        Uri.parse("https://flutter-construction.vercel.app/api/gemini"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "prompt":
+              """
 Generate a detailed house blueprint layout based on:
 
 Length: $length meters
@@ -90,27 +91,26 @@ Kitchens: $kitchens
 Balconies: $balconies
 
 Provide structured layout explanation.
-"""
-      }),
-    );
+""",
+        }),
+      );
 
-    print("Status Code: ${response.statusCode}");
-    print("Response Body: ${response.body}");
+      print("Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-      final text = data["candidates"]?[0]?["content"]?["parts"]?[0]?["text"];
+        final text = data["candidates"]?[0]?["content"]?["parts"]?[0]?["text"];
 
-      return text ?? "No blueprint generated.";
-    } else {
-      return "Server Error: ${response.statusCode}\n${response.body}";
+        return text ?? "No blueprint generated.";
+      } else {
+        return "Server Error: ${response.statusCode}\n${response.body}";
+      }
+    } catch (e) {
+      return "Error occurred: $e";
     }
-  } catch (e) {
-    return "Error occurred: $e";
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -258,27 +258,25 @@ Provide structured layout explanation.
                 Container(
                   width: double.infinity,
                   child: ElevatedButton(
-  onPressed: () async {
-    final blueprintText = await sendMessages();
+                    onPressed: () async {
+                      final blueprintText = await sendMessages();
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Blueprint(
-          blueprintData: blueprintText,
-        ),
-      ),
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.indigo[900],
-  ),
-  child: const Text(
-    'Generate Blueprint',
-    style: TextStyle(color: Colors.white),
-  ),
-)
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              Blueprint(blueprintData: blueprintText),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigo[900],
+                    ),
+                    child: const Text(
+                      'Generate Blueprint',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
               ],
             ),
