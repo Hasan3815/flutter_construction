@@ -22,7 +22,7 @@ class Blueprint extends StatelessWidget {
             blueprintData,
             style: const TextStyle(
               fontSize: 18,
-              color: Colors.black, 
+              color: Colors.white, 
             ),
           ),
         ),

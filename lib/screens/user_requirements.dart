@@ -75,7 +75,7 @@ Future<String> sendMessages() async {
 
   try {
     final response = await http.post(
-      Uri.parse("https://AiBlueprintGenerator.vercel.app/api/gemini"),
+      Uri.parse("https://aiblueprintgenerator.vercel.app/api/gemini"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "prompt": """
