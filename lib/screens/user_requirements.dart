@@ -74,25 +74,30 @@ class _UserRequirementsState extends State<UserRequirements> {
     }
 
     try {
+      //       final response = await http.post(
+      //         Uri.parse("https://flutter-construction.vercel.app/api/gemini"),
+      //         headers: {"Content-Type": "application/json"},
+      //         body: jsonEncode({
+      //           "prompt":
+      //               """
+      // Generate a detailed house blueprint layout based on:
+
+      // Length: $length meters
+      // Width: $width meters
+      // Shape: ${_selectedShape.name}
+      // Rooms: $rooms
+      // Bathrooms: $bathrooms
+      // Kitchens: $kitchens
+      // Balconies: $balconies
+
+      // Provide structured layout explanation.
+      // """,
+      //         }),
+      //       );
       final response = await http.post(
         Uri.parse("https://flutter-construction.vercel.app/api/gemini"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "prompt":
-              """
-Generate a detailed house blueprint layout based on:
-
-Length: $length meters
-Width: $width meters
-Shape: ${_selectedShape.name}
-Rooms: $rooms
-Bathrooms: $bathrooms
-Kitchens: $kitchens
-Balconies: $balconies
-
-Provide structured layout explanation.
-""",
-        }),
+        body: jsonEncode({"prompt": "test prompt"}),
       );
 
       print("Status Code: ${response.statusCode}");
