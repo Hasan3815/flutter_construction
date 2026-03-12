@@ -38,7 +38,7 @@ Future<String> sendMessages() async {
   }
 
   final response = await http.post(
-    Uri.parse("https://your-vercel-project-name.vercel.app/api/gemini"),
+    Uri.parse("https://flutter-construction.vercel.app/api/gemini"),
     headers: {"Content-Type": "application/json"},
     body: jsonEncode({
       "prompt":
@@ -55,7 +55,8 @@ Future<String> sendMessages() async {
   );
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body)['output'] ?? "No output received.";
+    final data = jsonDecode(response.body);
+return data["candidates"]?[0]?["content"]?["parts"]?[0]?["text"] ?? "No blueprint generated.";
   } else {
     return "Error from server: ${response.body}";
   }
