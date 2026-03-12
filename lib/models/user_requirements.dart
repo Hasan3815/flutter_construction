@@ -25,6 +25,42 @@ class _UserRequirementsState extends State<UserRequirements> {
   final TextEditingController kitchenController = TextEditingController();
   final TextEditingController balconyController = TextEditingController();
 
+// Future<String> sendMessages() async {
+//   final length = lengthController.text.trim();
+//   final width = widthController.text.trim();
+//   final rooms = roomController.text.trim();
+//   final bathrooms = bathroomController.text.trim();
+//   final kitchens = kitchenController.text.trim();
+//   final balconies = balconyController.text.trim();
+
+//   if (length.isEmpty || width.isEmpty) {
+//     return "Please enter length and width.";
+//   }
+
+//   final response = await http.post(
+//     Uri.parse("https://flutter-construction.vercel.app/api/gemini"),
+//     headers: {"Content-Type": "application/json"},
+//     body: jsonEncode({
+//       "prompt":
+//           "Generate a house blueprint based on the following details:"
+//           "\nLength: $length meters"
+//           "\nWidth: $width meters"
+//           "\nShape: ${_selectedShape.name}"
+//           "\nRooms: $rooms"
+//           "\nBathrooms: $bathrooms"
+//           "\nKitchens: $kitchens"
+//           "\nBalconies: $balconies"
+//           "\nGive the best layout."
+//     }),
+//   );
+
+//   if (response.statusCode == 200) {
+//     final data = jsonDecode(response.body);
+// return data["candidates"]?[0]?["content"]?["parts"]?[0]?["text"] ?? "No blueprint generated.";
+//   } else {
+//     return "Error from server: ${response.body}";
+//   }
+// }
 Future<String> sendMessages() async {
   final length = lengthController.text.trim();
   final width = widthController.text.trim();
@@ -41,27 +77,40 @@ Future<String> sendMessages() async {
     Uri.parse("https://flutter-construction.vercel.app/api/gemini"),
     headers: {"Content-Type": "application/json"},
     body: jsonEncode({
-      "prompt":
-          "Generate a house blueprint based on the following details:"
-          "\nLength: $length meters"
-          "\nWidth: $width meters"
-          "\nShape: ${_selectedShape.name}"
-          "\nRooms: $rooms"
-          "\nBathrooms: $bathrooms"
-          "\nKitchens: $kitchens"
-          "\nBalconies: $balconies"
-          "\nGive the best layout."
+      "prompt": """
+Generate a detailed house blueprint layout.
+
+Plot Size:
+Length: $length meters
+Width: $width meters
+Shape: ${_selectedShape.name}
+
+Requirements:
+Rooms: $rooms
+Bathrooms: $bathrooms
+Kitchens: $kitchens
+Balconies: $balconies
+
+Explain the full house layout step by step.
+"""
     }),
   );
 
+  print("Status Code: ${response.statusCode}");
+  print("Response Body: ${response.body}");
+
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
-return data["candidates"]?[0]?["content"]?["parts"]?[0]?["text"] ?? "No blueprint generated.";
+
+    if (data["candidates"] != null) {
+      return data["candidates"][0]["content"]["parts"][0]["text"];
+    }
+
+    return "AI returned empty response.";
   } else {
-    return "Error from server: ${response.body}";
+    return "Server error: ${response.body}";
   }
 }
-
 
   @override
   Widget build(BuildContext context) {
