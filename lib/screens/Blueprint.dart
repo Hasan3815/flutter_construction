@@ -1,30 +1,28 @@
-
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_construction/models/blueprint_painter.dart';
 
 class Blueprint extends StatelessWidget {
-  final String blueprintData; 
+  final String blueprintData;
 
   const Blueprint({super.key, required this.blueprintData});
 
   @override
   Widget build(BuildContext context) {
+    List rooms = [];
+
+try {
+  final decoded = jsonDecode(blueprintData);
+  rooms = decoded["rooms"] ?? [];
+} catch (e) {
+  print("Invalid JSON from API");
+}
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 19, 19, 19), 
-      appBar: AppBar(
-        title: const Text("Generated Blueprint"),
-        backgroundColor: const Color.fromARGB(255, 164, 167, 192),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: SelectableText(
-            blueprintData,
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white, 
-            ),
-          ),
+      appBar: AppBar(title: Text("Generated Blueprint")),
+      body: Center(
+        child: CustomPaint(
+          size: Size(400, 400),
+          painter: BlueprintPainter(rooms),
         ),
       ),
     );

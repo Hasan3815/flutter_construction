@@ -85,7 +85,6 @@ class _SelectQualityState extends State<SelectQuality> {
                       MaterialPageRoute(builder: (context) =>  UserRequirements()),
                     );
                   });
-                    
                   },
                   child: Container(
                     height: 200,

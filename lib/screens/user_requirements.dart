@@ -60,63 +60,35 @@ class _UserRequirementsState extends State<UserRequirements> {
   //     return "Error from server: ${response.body}";
   //   }
   // }
-
   Future<String> sendMessages() async {
-    final length = lengthController.text.trim();
-    final width = widthController.text.trim();
-    final rooms = roomController.text.trim();
-    final bathrooms = bathroomController.text.trim();
-    final kitchens = kitchenController.text.trim();
-    final balconies = balconyController.text.trim();
+  final length = lengthController.text.trim();
+  final width = widthController.text.trim();
+  final rooms = roomController.text.trim();
+  final bathrooms = bathroomController.text.trim();
+  final kitchens = kitchenController.text.trim();
+  final balconies = balconyController.text.trim();
 
-    if (length.isEmpty || width.isEmpty) {
-      return "Please enter length and width.";
-    }
+  final response = await http.post(
+    Uri.parse("https://flutter-construction.vercel.app/api/gemini"),
+    headers: {"Content-Type": "application/json"},
+    body: jsonEncode({
+      "length": length,
+      "width": width,
+      "rooms": rooms,
+      "bathrooms": bathrooms,
+      "kitchens": kitchens,
+      "balconies": balconies
+    }),
+  );
 
-    try {
-      //       final response = await http.post(
-      //         Uri.parse("https://flutter-construction.vercel.app/api/gemini"),
-      //         headers: {"Content-Type": "application/json"},
-      //         body: jsonEncode({
-      //           "prompt":
-      //               """
-      // Generate a detailed house blueprint layout based on:
+  print("API RESPONSE: ${response.body}");
 
-      // Length: $length meters
-      // Width: $width meters
-      // Shape: ${_selectedShape.name}
-      // Rooms: $rooms
-      // Bathrooms: $bathrooms
-      // Kitchens: $kitchens
-      // Balconies: $balconies
-
-      // Provide structured layout explanation.
-      // """,
-      //         }),
-      //       );
-      final response = await http.post(
-        Uri.parse("https://flutter-construction.vercel.app/api/gemini"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"prompt": "test prompt"}),
-      );
-
-      print("Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-
-        final text = data["candidates"]?[0]?["content"]?["parts"]?[0]?["text"];
-
-        return text ?? "No blueprint generated.";
-      } else {
-        return "Server Error: ${response.statusCode}\n${response.body}";
-      }
-    } catch (e) {
-      return "Error occurred: $e";
-    }
+  if (response.statusCode == 200) {
+    return response.body; // return raw json
+  } else {
+    return '{"rooms": []}';
   }
-
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
