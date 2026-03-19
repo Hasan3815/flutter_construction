@@ -46,23 +46,38 @@ Return ONLY JSON in this format:
 No explanation. Only JSON.
 `;
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: prompt }],
-            },
-          ],
-        }),
-      },
-    );
+const response = await fetch(
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [
+        {
+          parts: [{ text: prompt }],
+        },
+      ],
+    }),
+  }
+);
 
     const data = await response.json();
-    return res.status(200).json(data);
+
+// extract text output
+const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+// try parsing JSON from Gemini text
+let parsed;
+try {
+  parsed = JSON.parse(text);
+} catch (e) {
+  return res.status(500).json({
+    error: "Failed to parse Gemini response",
+    raw: text,
+  });
+}
+
+return res.status(200).json(parsed);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
