@@ -13,9 +13,14 @@ class Blueprint extends StatelessWidget {
 
 try {
   final decoded = jsonDecode(blueprintData);
-  rooms = decoded["rooms"] ?? [];
+
+  if (decoded is Map && decoded["rooms"] is List) {
+    rooms = decoded["rooms"];
+  } else {
+    rooms = [];
+  }
 } catch (e) {
-  print("Invalid JSON from API");
+  debugPrint("Invalid JSON from API: $e");
 }
     return Scaffold(
       appBar: AppBar(title: Text("Generated Blueprint")),
